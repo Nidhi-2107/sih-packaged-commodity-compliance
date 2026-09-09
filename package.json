@@ -1,0 +1,31 @@
+{
+  "name": "praman",
+  "version": "1.0.0",
+  "description": "PRAMAN - AI-Assisted Packaged Commodity Compliance & Inspection System",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "cd client && npm run dev",
+    "install:all": "npm install && cd client && npm install",
+    "seed": "node server/db/seed.js",
+    "build": "cd client && npm run build"
+  },
+  "dependencies": {
+    "@img/sharp-win32-x64": "^0.35.4",
+    "@zxing/library": "^0.23.0",
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^9.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "jsqr": "^1.4.0",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.35.4",
+    "sql.js": "^1.11.0",
+    "tesseract.js": "^5.1.1",
+    "uuid": "^10.0.0"
+  }
+}
