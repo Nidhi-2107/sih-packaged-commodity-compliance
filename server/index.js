@@ -3,9 +3,10 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initDb, runSql } from './db/database.js';
+import { initDb, getDb, saveDb, closeDb, runSql } from './db/database.js';
 import { seedDatabase } from './db/seed.js';
 import { authenticateToken } from './middleware/auth.js';
+import { UPLOAD_DIR } from './middleware/upload.js';
 import authRoutes from './routes/auth.js';
 import inspectionRoutes from './routes/inspections.js';
 import adminRoutes from './routes/admin.js';
@@ -18,13 +19,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+// CORS configuration (deployment friendly)
+const clientUrl = process.env.CLIENT_URL;
+app.use(cors({
+  origin: clientUrl ? [clientUrl, 'http://localhost:5173', 'http://localhost:3000'] : true,
+  credentials: true
+}));
+
+// Body parsing with safe limits
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Static file serving for uploads
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+// Static file serving for uploads (configurable path)
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 // Public routes (no auth)
 app.use('/api/auth', (req, res, next) => {
@@ -38,33 +45,64 @@ app.use('/api/admin', authenticateToken, adminRoutes);
 app.use('/api/rules', authenticateToken, rulesRoutes);
 app.use('/api/users', authenticateToken, usersRoutes);
 
-// Error handler
+// Production-safe error handler
 app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  if (err.message && err.message.includes('Invalid file type')) {
+  console.error('[PARAKH Server Error]:', err.message || err);
+  if (err.message && (err.message.includes('Invalid file') || err.message.includes('file format'))) {
     return res.status(400).json({ error: err.message });
   }
-  res.status(500).json({ error: 'Internal server error' });
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ error: 'Invalid or expired authentication token' });
+  }
+  res.status(500).json({ error: 'Internal server error. Please try again later.' });
 });
 
-// Initialize and start
+// Initialize and start server
 async function start() {
   try {
     await initDb();
     console.log('Database initialized.');
 
-    try {
-      runSql('UPDATE inspection_images SET inspection_id = 47 WHERE inspection_id = 0');
-    } catch (e) {}
+    // Only seed initial demo data if database is brand new (users table is empty)
+    // or when explicitly requested with SEED_DATABASE=true
+    const db = getDb();
+    let shouldSeed = process.env.SEED_DATABASE === 'true';
+    if (!shouldSeed) {
+      try {
+        const userCount = db.exec('SELECT COUNT(*) as cnt FROM users');
+        if (!userCount || !userCount[0]?.values?.[0]?.[0]) {
+          shouldSeed = true;
+        }
+      } catch (_) {
+        shouldSeed = true;
+      }
+    }
 
-    await seedDatabase();
-    console.log('Database seeded.');
+    if (shouldSeed) {
+      await seedDatabase();
+      console.log('Database seeded.');
+    } else {
+      console.log('Existing database detected. Preserving all records and history.');
+    }
 
-    app.listen(PORT, () => {
-      console.log(`PRAMAN server running on http://localhost:${PORT}`);
+    const server = app.listen(PORT, () => {
+      console.log(`PARAKH server running on http://localhost:${PORT}`);
     });
+
+    // Graceful shutdown handling
+    const handleShutdown = (signal) => {
+      console.log(`\n[${signal}] Shutting down PARAKH server gracefully...`);
+      server.close(() => {
+        closeDb();
+        console.log('Database closed. Process exiting.');
+        process.exit(0);
+      });
+    };
+
+    process.on('SIGINT', () => handleShutdown('SIGINT'));
+    process.on('SIGTERM', () => handleShutdown('SIGTERM'));
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('Failed to start PARAKH server:', error);
     process.exit(1);
   }
 }

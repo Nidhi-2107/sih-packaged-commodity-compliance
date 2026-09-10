@@ -112,9 +112,12 @@ export async function generatePreprocessingVariants(imagePath) {
  */
 export async function createEvidenceCrop(imagePath, bbox, inspectionId, fieldName) {
   if (!bbox || !imagePath) return null;
-
   try {
-    const cropsDir = path.join(process.cwd(), 'uploads', 'crops', String(inspectionId));
+    const uploadBase = process.env.UPLOAD_DIR
+      ? path.resolve(process.env.UPLOAD_DIR)
+      : path.join(process.cwd(), 'uploads');
+    const safeId = String(inspectionId).replace(/[^a-zA-Z0-9_-]/g, '');
+    const cropsDir = path.join(uploadBase, 'crops', safeId);
     if (!fs.existsSync(cropsDir)) {
       fs.mkdirSync(cropsDir, { recursive: true });
     }

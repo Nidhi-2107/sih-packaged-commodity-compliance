@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Emblem from './Emblem';
+import parakhLogo from '../assets/parakh_logo.jpg';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -140,9 +141,13 @@ export default function Layout({ children }) {
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* State Emblem of India */}
-          <div className="gov-emblem-badge">
-            <Emblem size={48} color="#ffffff" />
+          {/* Official PARAKH Logo Badge */}
+          <div className="gov-emblem-badge" style={{ padding: '2px', background: '#0a1d33', borderRadius: '6px', display: 'flex', alignItems: 'center', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <img
+              src={parakhLogo}
+              alt="PARAKH Official Emblem & Ministry Logo"
+              style={{ height: '46px', width: 'auto', maxHeight: '100%', objectFit: 'contain', borderRadius: '4px' }}
+            />
           </div>
 
           <div className="gov-brand-divider" />
@@ -150,8 +155,8 @@ export default function Layout({ children }) {
           {/* Title & Department Hierarchy */}
           <div className="gov-brand-details">
             <div className="gov-brand-title-row">
-              <span className="gov-brand-title">PRAMAN</span>
-              <span className="gov-brand-hindi">प्रमाण</span>
+              <span className="gov-brand-title">PARAKH</span>
+              <span className="gov-brand-hindi">परख</span>
               <span className="gov-brand-tag">PORTAL</span>
             </div>
             <div className="gov-brand-subtitle">
@@ -185,7 +190,7 @@ export default function Layout({ children }) {
             type="button"
             className="gov-logout-btn"
             onClick={handleLogout}
-            title="Sign Out from PRAMAN Portal"
+            title="Sign Out from PARAKH Portal"
           >
             <LogOut size={15} />
             <span className="hide-on-mobile">Sign Out</span>

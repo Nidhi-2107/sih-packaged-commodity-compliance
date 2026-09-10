@@ -6,6 +6,11 @@ import { extractDeclarationsFromImage, mergeMultiImageDeclarations } from '../se
 import { evaluateCompliance } from '../services/complianceEngine.js';
 import { performAIVisionAnalysis } from '../services/visionAIService.js';
 import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = Router();
 
@@ -80,9 +85,9 @@ router.post('/', (req, res) => {
     }
 
     // Generate inspection number
-    const countResult = queryOne('SELECT COUNT(*) as cnt FROM inspections');
-    const nextNum = (countResult?.cnt || 0) + 1;
-    const inspectionNumber = `PRAMAN-2026-${String(nextNum).padStart(4, '0')}`;
+    const maxIdRes = queryOne('SELECT MAX(id) as max_id FROM inspections');
+    const nextNum = (maxIdRes?.max_id || 0) + 1;
+    const inspectionNumber = `PARAKH-2026-${String(nextNum).padStart(4, '0')}`;
 
     runSql(`INSERT INTO inspections (inspection_number, inspector_id, business_id, product_id, inspection_date, inspection_type, district, state, latitude, longitude, status, remarks) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
       [inspectionNumber, req.user.id, business.id, product.id, inspection_date,
@@ -329,8 +334,17 @@ router.post('/:id/analyze', async (req, res) => {
         return res.status(400).json({ error: 'No images uploaded for this inspection. Upload package images first.' });
       }
 
-      console.log(`[PRAMAN Vision Pipeline] Starting Vision AI analysis for inspection #${inspectionId} with ${images.length} images...`);
-      visionResult = await performAIVisionAnalysis(images, inspection);
+      console.log(`[PARAKH Vision Pipeline] Starting Vision AI analysis for inspection #${inspectionId} with ${images.length} images...`);
+      const visionStartTime = Date.now();
+      visionResult = await performAIVisionAnalysis(images, {
+        product_name: inspection.product_name,
+        category: inspection.category,
+        inspection_id: inspectionId
+      });
+
+      if (!visionResult.success) {
+        console.warn('[PARAKH Vision Pipeline] Vision AI returned error or unparseable output:', visionResult.error);
+      }
 
       if (visionResult.needs_config) {
         return res.status(400).json({
@@ -780,7 +794,7 @@ router.post('/reports/:inspectionId', (req, res) => {
 
     const reportPayload = {
       header: {
-        title: 'PRAMAN',
+        title: 'PARAKH',
         subtitle: 'AI-Assisted Packaged Commodity Compliance & Inspection System',
         authority: 'Government of India — Ministry of Consumer Affairs, Food & Public Distribution',
         department: 'Department of Consumer Affairs • Legal Metrology Division',
@@ -829,7 +843,7 @@ router.post('/reports/:inspectionId', (req, res) => {
       violations,
       decisions,
       manual_review_items: compliance.checklist.filter(c => c.status === 'requires_manual_verification'),
-      disclaimer: 'PRAMAN is an AI-assisted inspection support system. Automated findings are indicative and require verification by an authorized Legal Metrology officer.',
+      disclaimer: 'PARAKH is an AI-assisted inspection support system. Automated findings are indicative and require verification by an authorized Legal Metrology officer.',
       generated_at: new Date().toISOString(),
       generated_by: req.user.name
     };
@@ -896,6 +910,105 @@ router.get('/:id/violations', (req, res) => {
     res.json({ violations });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch violations' });
+  }
+});
+
+// DELETE /api/inspections/:id — Delete inspection with RBAC authorization & cascading cleanup
+router.delete('/:id', async (req, res) => {
+  try {
+    const inspectionId = req.params.id;
+    const inspection = queryOne('SELECT * FROM inspections WHERE id = ?', [inspectionId]);
+
+    if (!inspection) {
+      return res.status(404).json({ success: false, error: 'Inspection not found' });
+    }
+
+    // RBAC Authorization:
+    // Admin can delete any inspection; Inspector can only delete their own.
+    const isAdmin = req.user.role === 'admin';
+    const isOwner = Number(inspection.inspector_id) === Number(req.user.id);
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({
+        success: false,
+        error: 'Unauthorized: You do not have permission to delete this inspection'
+      });
+    }
+
+    // 1. Delete dependent officer decisions (linked via violations)
+    runSql(`
+      DELETE FROM officer_decisions 
+      WHERE violation_id IN (SELECT id FROM violations WHERE inspection_id = ?)
+    `, [inspectionId]);
+
+    // 2. Delete violations
+    runSql('DELETE FROM violations WHERE inspection_id = ?', [inspectionId]);
+
+    // 3. Delete declarations
+    runSql('DELETE FROM declarations WHERE inspection_id = ?', [inspectionId]);
+
+    // 4. Delete ocr_results
+    runSql('DELETE FROM ocr_results WHERE inspection_id = ?', [inspectionId]);
+
+    // 5. Delete inspection_images
+    runSql('DELETE FROM inspection_images WHERE inspection_id = ?', [inspectionId]);
+
+    // 6. Delete reports
+    runSql('DELETE FROM reports WHERE inspection_id = ?', [inspectionId]);
+
+    // 7. Delete inspection record
+    runSql('DELETE FROM inspections WHERE id = ?', [inspectionId]);
+
+    // 8. Safe physical file cleanup
+    const uploadBase = process.env.UPLOAD_DIR
+      ? path.resolve(process.env.UPLOAD_DIR)
+      : path.join(__dirname, '..', '..', 'uploads');
+
+    const safeId = String(inspectionId).replace(/[^a-zA-Z0-9_-]/g, '');
+
+    // Remove inspection images directory: uploads/:id
+    try {
+      const inspectionDir = path.join(uploadBase, safeId);
+      if (fs.existsSync(inspectionDir)) {
+        fs.rmSync(inspectionDir, { recursive: true, force: true });
+      }
+    } catch (fileErr) {
+      console.warn(`Could not clean up image folder for inspection ${inspectionId}:`, fileErr.message);
+    }
+
+    // Remove evidence crops directory: uploads/crops/:id
+    try {
+      const cropsDir = path.join(uploadBase, 'crops', safeId);
+      if (fs.existsSync(cropsDir)) {
+        fs.rmSync(cropsDir, { recursive: true, force: true });
+      }
+    } catch (cropErr) {
+      console.warn(`Could not clean up crop folder for inspection ${inspectionId}:`, cropErr.message);
+    }
+
+    // 9. Audit log entry: action = DELETE_INSPECTION
+    runSql(
+      'INSERT INTO audit_logs (user_id, user_name, action, entity_type, entity_id, details, timestamp) VALUES (?,?,?,?,?,?,datetime("now"))',
+      [
+        req.user.id,
+        req.user.name,
+        'DELETE_INSPECTION',
+        'inspection',
+        inspectionId,
+        `Deleted inspection #${inspection.inspection_number} (${inspection.status}) by ${req.user.role} ${req.user.name}`
+      ]
+    );
+
+    saveDb();
+
+    res.json({
+      success: true,
+      message: `Inspection ${inspection.inspection_number} deleted successfully`,
+      deleted_id: Number(inspectionId)
+    });
+  } catch (error) {
+    console.error('Delete inspection error:', error);
+    res.status(500).json({ success: false, error: 'Unable to delete inspection. Please try again.' });
   }
 });
 

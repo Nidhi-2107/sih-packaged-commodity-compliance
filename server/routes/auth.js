@@ -14,7 +14,13 @@ router.post('/login', (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    let user = queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    if (!user && email.includes('@parakh.gov.in')) {
+      user = queryOne('SELECT * FROM users WHERE email = ?', [email.replace('@parakh.gov.in', '@praman.gov.in')]);
+    } else if (!user && email.includes('@praman.gov.in')) {
+      user = queryOne('SELECT * FROM users WHERE email = ?', [email.replace('@praman.gov.in', '@parakh.gov.in')]);
+    }
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

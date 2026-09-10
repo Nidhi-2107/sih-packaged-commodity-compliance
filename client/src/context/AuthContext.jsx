@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('praman_token'));
+  const [token, setToken] = useState(localStorage.getItem('parakh_token') || localStorage.getItem('praman_token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
     const { token: newToken, user: userData } = res.data;
     setToken(newToken);
     setUser(userData);
-    localStorage.setItem('praman_token', newToken);
+    localStorage.setItem('parakh_token', newToken);
     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
     return userData;
   };
@@ -36,6 +36,7 @@ export function AuthProvider({ children }) {
     }
     setToken(null);
     setUser(null);
+    localStorage.removeItem('parakh_token');
     localStorage.removeItem('praman_token');
     delete api.defaults.headers.common['Authorization'];
   };

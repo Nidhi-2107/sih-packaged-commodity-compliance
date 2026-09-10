@@ -6,7 +6,9 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
+export const UPLOAD_DIR = process.env.UPLOAD_DIR
+  ? path.resolve(process.env.UPLOAD_DIR)
+  : path.join(__dirname, '..', '..', 'uploads');
 
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -14,7 +16,8 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const inspectionDir = path.join(UPLOAD_DIR, req.params.id || 'temp');
+    const safeId = String(req.params.id || 'temp').replace(/[^a-zA-Z0-9_-]/g, '');
+    const inspectionDir = path.join(UPLOAD_DIR, safeId);
     if (!fs.existsSync(inspectionDir)) {
       fs.mkdirSync(inspectionDir, { recursive: true });
     }
@@ -27,7 +30,8 @@ const storage = multer.diskStorage({
       else if (file.mimetype === 'image/webp') ext = '.webp';
       else ext = '.jpg';
     }
-    const name = `${Date.now()}-${Math.round(Math.random() * 1E6)}${ext}`;
+    const safeExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
+    const name = `${Date.now()}-${Math.round(Math.random() * 1E6)}${safeExt}`;
     cb(null, name);
   }
 });

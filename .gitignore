@@ -4,5 +4,4 @@ server/uploads/
 server/*.db
 *.db
 dist/
-.DS_Store
-.env.example
+.DS_Store

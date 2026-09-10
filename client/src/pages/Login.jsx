@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Emblem from '../components/Emblem';
+import parakhLogo from '../assets/parakh_logo.jpg';
 import { Shield, LogIn, AlertTriangle, Lock, Mail, UserCheck, CheckCircle2 } from 'lucide-react';
 
 export default function Login() {
@@ -29,11 +30,11 @@ export default function Login() {
 
   const fillDemo = (type) => {
     if (type === 'inspector') {
-      setEmail('inspector@praman.gov.in');
+      setEmail('inspector@parakh.gov.in');
       setPassword('Inspector@123');
       setRole('inspector');
     } else {
-      setEmail('admin@praman.gov.in');
+      setEmail('admin@parakh.gov.in');
       setPassword('Admin@123');
       setRole('admin');
     }
@@ -63,11 +64,15 @@ export default function Login() {
         <div className="gov-login-card">
           {/* Official Emblem & Portal Header */}
           <div className="gov-login-card-header">
-            <div style={{ margin: '0 auto 0.65rem', display: 'inline-block' }}>
-              <Emblem size={56} color="#ffffff" />
+            <div style={{ margin: '0 auto 0.75rem', display: 'flex', justifyContent: 'center' }}>
+              <img
+                src={parakhLogo}
+                alt="PARAKH Official Ministry Logo"
+                style={{ height: '54px', width: 'auto', objectFit: 'contain', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.18)' }}
+              />
             </div>
             <h1 style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '0.04em', margin: 0, textTransform: 'uppercase' }}>
-              PRAMAN <span style={{ fontFamily: 'Noto Sans Devanagari, sans-serif', color: '#ffb74d' }}>प्रमाण</span>
+              PARAKH <span style={{ fontFamily: 'Noto Sans Devanagari, sans-serif', color: '#ffb74d' }}>परख</span>
             </h1>
             <div style={{ fontSize: '0.82rem', color: '#e2e8f0', marginTop: '4px' }}>
               Packaged Commodity Compliance & Inspection Portal
@@ -102,7 +107,7 @@ export default function Login() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="e.g. inspector@praman.gov.in"
+                    placeholder="e.g. inspector@parakh.gov.in"
                     required
                     style={{ paddingLeft: '2.25rem' }}
                   />
@@ -167,8 +172,8 @@ export default function Login() {
                 </button>
               </div>
               <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.6rem', lineHeight: 1.4 }}>
-                • <strong>Inspector:</strong> <code>inspector@praman.gov.in</code> (Pass: <code>Inspector@123</code>)<br />
-                • <strong>Admin:</strong> <code>admin@praman.gov.in</code> (Pass: <code>Admin@123</code>)
+                • <strong>Inspector:</strong> <code>inspector@parakh.gov.in</code> (Pass: <code>Inspector@123</code>)<br />
+                • <strong>Admin:</strong> <code>admin@parakh.gov.in</code> (Pass: <code>Admin@123</code>)
               </div>
             </div>
           </div>
@@ -181,7 +186,7 @@ export default function Login() {
           <strong>Government of India — Ministry of Consumer Affairs, Food & Public Distribution</strong>
         </div>
         <div style={{ marginTop: '3px', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-          PRAMAN: Legal Metrology Packaged Commodities (PC) Rules Enforcement System • Prototype SIH 2026
+          PARAKH: Legal Metrology Packaged Commodities (PC) Rules Enforcement System • Prototype SIH 2026
         </div>
       </footer>
     </div>

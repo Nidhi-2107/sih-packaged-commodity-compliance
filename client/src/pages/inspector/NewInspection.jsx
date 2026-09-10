@@ -576,7 +576,7 @@ export default function NewInspection() {
               <div>
                 <h3 style={{ margin: 0 }}>Legal Metrology Statutory Compliance Checklist</h3>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  Evaluated deterministically by PRAMAN Rule Engine (Legal Metrology Packaged Commodities Rules, 2011)
+                  Evaluated deterministically by PARAKH Rule Engine (Legal Metrology Packaged Commodities Rules, 2011)
                 </span>
               </div>
               <button className="btn btn-sm btn-primary" onClick={openEditModal} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -905,7 +905,7 @@ export default function NewInspection() {
                 <div className="disclaimer" style={{ marginBottom: '1.5rem' }}>
                   <AlertTriangle size={16} />
                   <div style={{ fontSize: '0.75rem', lineHeight: 1.5 }}>
-                    <strong>Statutory Disclaimer:</strong> This inspection document was generated via PRAMAN (Packaged Commodity Compliance & Inspection System). Computer-vision findings are indicative and serve as inspection assistance. All final enforcement determinations, notices, or penalty proceedings remain the sole authority and responsibility of the duly authorized Legal Metrology Officer.
+                    <strong>Statutory Disclaimer:</strong> This inspection document was generated via PARAKH (Packaged Commodity Compliance & Inspection System). Computer-vision findings are indicative and serve as inspection assistance. All final enforcement determinations, notices, or penalty proceedings remain the sole authority and responsibility of the duly authorized Legal Metrology Officer.
                   </div>
                 </div>
 
@@ -1023,7 +1023,7 @@ export default function NewInspection() {
                 style={{ maxWidth: '100%', maxHeight: 350, objectFit: 'contain', borderRadius: 6, border: '1px solid var(--gray-300)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
               />
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.75rem' }}>
-                High-resolution optical region cropped automatically by PRAMAN Vision Pipeline.
+                High-resolution optical region cropped automatically by PARAKH Vision Pipeline.
               </div>
             </div>
             <div className="modal-footer">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import Emblem from '../../components/Emblem';
+import parakhLogo from '../../assets/parakh_logo.jpg';
 import api from '../../api/api';
 import {
   ArrowLeft,
@@ -131,15 +132,22 @@ export default function InspectionDetail() {
     <Layout>
       {/* Official Government of India Header for PDF / Print Output */}
       <div className="print-only-header">
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-          <Emblem size={56} color="#0c2340" />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
+          <img 
+            src={parakhLogo} 
+            alt="PARAKH Official Ministry Emblem" 
+            style={{ height: '52px', width: 'auto', objectFit: 'contain', borderRadius: '4px' }} 
+          />
         </div>
         <h1 style={{ margin: '4px 0', fontSize: '16pt', letterSpacing: '1px' }}>भारत सरकार | GOVERNMENT OF INDIA</h1>
         <p style={{ margin: '2px 0', fontSize: '10pt', fontWeight: 700, color: '#333' }}>
           MINISTRY OF CONSUMER AFFAIRS, FOOD & PUBLIC DISTRIBUTION • DEPARTMENT OF LEGAL METROLOGY
         </p>
-        <p style={{ fontWeight: 800, marginTop: '6px', fontSize: '11pt', textDecoration: 'underline' }}>
-          LEGAL METROLOGY (PACKAGED COMMODITIES) RULES, 2011 — STATUTORY COMPLIANCE INSPECTION REPORT
+        <p style={{ fontWeight: 800, marginTop: '4px', fontSize: '11pt', color: 'var(--gov-navy-900)' }}>
+          PARAKH — STATUTORY PACKAGED COMMODITY COMPLIANCE INSPECTION REPORT
+        </p>
+        <p style={{ fontWeight: 700, marginTop: '2px', fontSize: '9.5pt', textDecoration: 'underline' }}>
+          Legal Metrology (Packaged Commodities) Rules, 2011
         </p>
         <p style={{ fontSize: '9pt', color: '#555', marginTop: '4px' }}>
           Case File: <strong>{insp.inspection_number}</strong> | Date: <strong>{insp.inspection_date || insp.created_at}</strong> | Inspecting Officer: <strong>{insp.inspector_name} ({insp.employee_id})</strong>
@@ -355,7 +363,7 @@ export default function InspectionDetail() {
           <div>
             <h3 style={{ margin: 0 }}>Legal Metrology Statutory Compliance Checklist</h3>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-              Evaluated deterministically by PRAMAN Rule Engine (Legal Metrology Packaged Commodities Rules, 2011)
+              Evaluated deterministically by PARAKH Rule Engine (Legal Metrology Packaged Commodities Rules, 2011)
             </span>
           </div>
           <button className="btn btn-sm btn-primary" onClick={openEditModal} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -570,7 +578,7 @@ export default function InspectionDetail() {
       <div className="disclaimer" style={{ marginBottom: '2rem' }}>
         <AlertTriangle size={16} />
         <span style={{ fontSize: '0.8rem' }}>
-          <strong>Statutory Notice:</strong> PRAMAN is an AI-assisted inspection support system. Automated findings are indicative and require verification by an authorized Legal Metrology officer.
+          <strong>Statutory Notice:</strong> PARAKH is an AI-assisted inspection support system. Automated findings are indicative and require verification by an authorized Legal Metrology officer.
         </span>
       </div>
 

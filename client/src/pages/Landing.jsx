@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Emblem from '../components/Emblem';
+import parakhLogo from '../assets/parakh_logo.jpg';
 import heroPackageImg from '../assets/hero_package.jpg';
 import watermarkImg from '../assets/gov_building_watermark.jpg';
 import {
@@ -50,17 +51,24 @@ export default function Landing() {
       {/* 2. MAIN HEADER */}
       <header className="pl-header">
         <div className="pl-header-inner">
-          {/* Left: Emblem & PRAMAN Logo */}
+          {/* Left: Official PARAKH Logo & Branding */}
           <Link to="/" className="pl-brand">
-            <Emblem size={46} color="#0c2340" />
-            <div className="pl-brand-text">
-              <div className="pl-logo-title-row">
-                <span className="pl-logo-accent" />
-                <span className="pl-logo-title">PRAMAN</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img
+                src={parakhLogo}
+                alt="PARAKH Official Ministry Logo"
+                style={{ height: '44px', width: 'auto', objectFit: 'contain', borderRadius: '4px' }}
+              />
+              <div className="pl-brand-text">
+                <div className="pl-logo-title-row">
+                  <span className="pl-logo-accent" />
+                  <span className="pl-logo-title">PARAKH</span>
+                  <span style={{ fontSize: '1.05rem', fontWeight: 700, color: '#e65100', marginLeft: '6px' }}>परख</span>
+                </div>
+                <span className="pl-logo-subtitle">
+                  AI-Assisted Packaged Commodity Compliance & Inspection System
+                </span>
               </div>
-              <span className="pl-logo-subtitle">
-                AI-Assisted Packaged Commodity Compliance & Inspection System
-              </span>
             </div>
           </Link>
 
@@ -99,13 +107,13 @@ export default function Landing() {
           </h1>
 
           <p className="pl-hero-desc">
-            PRAMAN leverages AI to assist Legal Metrology officers in inspecting packaged commodities,
+            PARAKH leverages AI to assist Legal Metrology officers in inspecting packaged commodities,
             ensuring compliance, consumer protection and a more transparent marketplace.
           </p>
 
           <div className="pl-hero-ctas">
             <Link to="/login" className="pl-btn-primary">
-              Login to PRAMAN <ArrowRight size={16} />
+              Login to PARAKH <ArrowRight size={16} />
             </Link>
             <a href="#about" className="pl-btn-secondary">
               Learn More <Info size={16} style={{ color: '#0c2340' }} />
@@ -313,13 +321,17 @@ export default function Landing() {
       {/* 7. INSTITUTIONAL FOOTER */}
       <footer className="pl-footer" id="contact">
         <div className="pl-footer-inner">
-          {/* Col 1: Emblem & PRAMAN Info */}
+          {/* Col 1: Official Logo & PARAKH Info */}
           <div className="pl-footer-col">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.85rem' }}>
-              <Emblem size={38} color="#ffffff" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0.85rem' }}>
+              <img
+                src={parakhLogo}
+                alt="PARAKH Official Ministry Logo"
+                style={{ height: '42px', width: 'auto', objectFit: 'contain', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.15)' }}
+              />
               <div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '0.5px' }}>
-                  PRAMAN
+                  PARAKH <span style={{ color: '#ffb74d', fontSize: '1rem', fontWeight: 600 }}>परख</span>
                 </div>
                 <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
                   AI-Assisted Packaged Commodity Compliance & Inspection System
@@ -372,7 +384,7 @@ export default function Landing() {
             © 2026 Department of Consumer Affairs, Government of India. All Rights Reserved.
           </div>
           <div>
-            PRAMAN Prototype • Designed for Legal Metrology Enforcement
+            PARAKH Prototype • Designed for Legal Metrology Enforcement
           </div>
         </div>
 

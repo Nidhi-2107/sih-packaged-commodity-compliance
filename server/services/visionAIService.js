@@ -1,5 +1,5 @@
 /**
- * Vision AI Service — Primary Image Analysis Pipeline for PRAMAN
+ * Vision AI Service — Primary Image Analysis Pipeline for PARAKH
  * 
  * Replaces traditional OCR with direct Multimodal Vision AI:
  * - Direct image inspection via OpenAI (GPT-4o-mini / GPT-4o) and Google Gemini
@@ -228,7 +228,7 @@ export class GeminiVisionProvider extends BaseVisionProvider {
       });
     }
 
-    const candidateModels = [this.model, 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest'].filter((m, i, a) => Boolean(m) && a.indexOf(m) === i);
+    const candidateModels = [this.model, 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-flash-latest'].filter((m, i, a) => Boolean(m) && a.indexOf(m) === i);
     let lastError = null;
 
     for (const modelToTry of candidateModels) {
@@ -336,7 +336,7 @@ function buildSystemPrompt(options = {}) {
   const productHint = options.product_name ? `Reported product hint: "${options.product_name}".` : '';
   const categoryHint = options.category ? `Category: "${options.category}".` : '';
 
-  return `You are PRAMAN AI Vision Inspector for the Ministry of Consumer Affairs, Government of India (Legal Metrology Packaged Commodities Rules, 2011).
+  return `You are PARAKH AI Vision Inspector for the Ministry of Consumer Affairs, Government of India (Legal Metrology Packaged Commodities Rules, 2011).
 You are analyzing high-resolution photographs of packaged food commodities uploaded during official regulatory inspections.
 ${productHint} ${categoryHint}
 

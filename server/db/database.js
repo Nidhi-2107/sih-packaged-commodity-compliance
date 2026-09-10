@@ -2,11 +2,14 @@ import initSqlJs from 'sql.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createSchema } from './schema.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DB_PATH = path.join(__dirname, '..', '..', 'praman.db');
+export const DB_PATH = process.env.DATABASE_PATH 
+  ? path.resolve(process.env.DATABASE_PATH) 
+  : path.join(__dirname, '..', '..', 'praman.db');
 
 let db = null;
 let SQL = null;
@@ -19,38 +22,17 @@ export async function initDb() {
     const buffer = fs.readFileSync(DB_PATH);
     db = new SQL.Database(buffer);
   } else {
+    const dir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     db = new SQL.Database();
   }
 
   db.run('PRAGMA foreign_keys = ON');
 
-  // Automatic column migrations
-  try { db.run('ALTER TABLE declarations ADD COLUMN verified_value TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN is_verified INTEGER DEFAULT 0'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN crop_path TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN evidence TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN source_image TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN source_type TEXT DEFAULT "printed"'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN verified_by TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE declarations ADD COLUMN verified_at TEXT'); } catch (_) {}
-
-  try { db.run('ALTER TABLE inspections ADD COLUMN qr_data TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN barcode_data TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN manufacturing_date TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN packing_date TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN expiry_date TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN use_by_date TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN best_before TEXT'); } catch (_) {}
-  try { db.run('ALTER TABLE inspections ADD COLUMN shelf_life TEXT'); } catch (_) {}
-
-  // Ensure food-specific Rule LMPC-010 is seeded
-  try {
-    const existingRule = db.exec("SELECT id FROM rules WHERE rule_code = 'LMPC-010'");
-    if (!existingRule || existingRule.length === 0 || !existingRule[0].values || existingRule[0].values.length === 0) {
-      db.run(`INSERT INTO rules (rule_code, name, description, legal_reference, category, field_name, required, severity, active) 
-              VALUES ('LMPC-010', 'Best Before or Expiry Date', 'For human food packages, the best before date/period or use-by/expiry date must be declared.', 'Legal Metrology (Packaged Commodities) Rules, 2011 - Rule 6(1)(d)', 'packaged_food', 'best_before', 1, 'major', 1)`);
-    }
-  } catch (_) {}
+  // Ensure full schema and indexes are initialized idempotently
+  createSchema();
 
   saveDb();
 
@@ -66,6 +48,10 @@ export function saveDb() {
   if (!db) return;
   const data = db.export();
   const buffer = Buffer.from(data);
+  const dir = path.dirname(DB_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
   fs.writeFileSync(DB_PATH, buffer);
 }
 
