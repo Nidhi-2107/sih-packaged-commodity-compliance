@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Layout from '../../components/Layout';
+import Emblem from '../../components/Emblem';
 import api from '../../api/api';
 import {
   Upload, Camera, Check, AlertTriangle, ChevronRight, ChevronLeft,
@@ -264,9 +265,12 @@ export default function NewInspection() {
 
   return (
     <Layout>
-      <div className="page-header">
-        <h2>New Inspection</h2>
-        <p>Create a new packaged commodity compliance inspection</p>
+      <div className="gov-page-header">
+        <div className="gov-page-title-row">
+          <h2>New Statutory Inspection</h2>
+          <span className="gov-badge-gold">Field Investigation Mode</span>
+        </div>
+        <p>National Packaged Commodity Compliance & Legal Metrology Verification System</p>
       </div>
 
       {renderSteps()}
@@ -787,12 +791,18 @@ export default function NewInspection() {
             <div className="card" style={{ marginBottom: '1.5rem' }}>
               <div className="card-body" style={{ padding: '2rem' }}>
                 {/* Official Government Header */}
-                <div style={{ textAlign: 'center', borderBottom: '2px solid var(--navy)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.5px' }}>
-                    GOVERNMENT OF INDIA / STATE LEGAL METROLOGY DEPARTMENT
+                <div style={{ textAlign: 'center', borderBottom: '2px solid var(--gov-navy-800)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                    <Emblem size={52} color="var(--gov-navy-800)" />
                   </div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--navy-600)', marginTop: '2px' }}>
-                    PACKAGED COMMODITY STATUTORY INSPECTION & COMPLIANCE REPORT
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--gov-orange-700)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    भारत सरकार | Government of India
+                  </div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--gov-navy-800)', letterSpacing: '0.5px', marginTop: '2px' }}>
+                    MINISTRY OF CONSUMER AFFAIRS, FOOD & PUBLIC DISTRIBUTION
+                  </div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--gov-navy-700)', marginTop: '2px' }}>
+                    DEPARTMENT OF LEGAL METROLOGY • STATUTORY COMPLIANCE REPORT
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                     Issued under the Legal Metrology Act, 2009 & Legal Metrology (Packaged Commodities) Rules, 2011

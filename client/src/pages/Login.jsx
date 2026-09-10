@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, LogIn, AlertTriangle } from 'lucide-react';
+import Emblem from '../components/Emblem';
+import { Shield, LogIn, AlertTriangle, Lock, Mail, UserCheck, CheckCircle2 } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function Login() {
       const user = await login(email, password, role);
       navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || 'Authentication failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -39,76 +40,149 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="gov-bar">
-        <span>Government of India — Ministry of Consumer Affairs, Food & Public Distribution</span>
-        <span className="prototype-badge">Prototype</span>
-      </div>
-
-      <div style={{ background: 'var(--navy)', padding: '1.25rem 2rem', textAlign: 'center', color: 'white' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
-          <Shield size={28} />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.05em' }}>PRAMAN</div>
-            <div style={{ fontSize: '0.65rem', opacity: 0.75 }}>AI-Assisted Packaged Commodity Compliance & Inspection System</div>
-          </div>
+    <div className="gov-login-wrapper">
+      {/* 1. Official Government Top Strip */}
+      <div className="gov-top-utility-bar">
+        <div className="gov-top-utility-left">
+          <strong>भारत सरकार</strong>
+          <span className="separator">|</span>
+          <span>Government of India</span>
+          <span className="separator hide-on-mobile">•</span>
+          <span className="hide-on-mobile">Ministry of Consumer Affairs, Food & Public Distribution</span>
+        </div>
+        <div className="gov-top-utility-right">
+          <span className="gov-util-lang-pill">हिन्दी / En</span>
         </div>
       </div>
 
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-card-header">
-            <h2><LogIn size={18} style={{ marginRight: '0.5rem', verticalAlign: 'middle' }} /> Secure Login</h2>
+      {/* 2. Indian National Tricolor Hairline Accent */}
+      <div className="gov-tricolor-accent" />
+
+      {/* 3. Main Login Card Container */}
+      <div className="gov-login-container">
+        <div className="gov-login-card">
+          {/* Official Emblem & Portal Header */}
+          <div className="gov-login-card-header">
+            <div style={{ margin: '0 auto 0.65rem', display: 'inline-block' }}>
+              <Emblem size={56} color="#ffffff" />
+            </div>
+            <h1 style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '0.04em', margin: 0, textTransform: 'uppercase' }}>
+              PRAMAN <span style={{ fontFamily: 'Noto Sans Devanagari, sans-serif', color: '#ffb74d' }}>प्रमाण</span>
+            </h1>
+            <div style={{ fontSize: '0.82rem', color: '#e2e8f0', marginTop: '4px' }}>
+              Packaged Commodity Compliance & Inspection Portal
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', opacity: 0.85, marginTop: '2px' }}>
+              Legal Metrology Division • Government of India
+            </div>
           </div>
-          <div className="login-card-body">
+
+          <div className="card-body" style={{ padding: '1.75rem 1.5rem' }}>
+            <div style={{ borderBottom: '1.5px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.98rem', color: 'var(--gov-navy-800)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Lock size={16} color="var(--gov-navy-700)" /> Official Portal Sign In
+              </div>
+              <span className="badge badge-neutral" style={{ fontSize: '0.68rem' }}>AUTHORIZED ACCESS ONLY</span>
+            </div>
+
             {error && (
-              <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '0.6rem 0.75rem', borderRadius: 'var(--border-radius)', fontSize: '0.8rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <AlertTriangle size={14} /> {error}
+              <div className="disclaimer" style={{ background: 'var(--status-violation-bg)', borderColor: 'var(--status-violation-border)', color: 'var(--status-violation-text)', marginBottom: '1.25rem' }}>
+                <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: 2 }} />
+                <div>{error}</div>
               </div>
             )}
+
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Employee ID / Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required />
+                <label className="form-label">
+                  Official Email / Officer Employee ID <span style={{ color: 'var(--gov-red)' }}>*</span>
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="e.g. inspector@praman.gov.in"
+                    required
+                    style={{ paddingLeft: '2.25rem' }}
+                  />
+                  <Mail size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
+                </div>
               </div>
+
               <div className="form-group">
-                <label className="form-label">Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
+                <label className="form-label">
+                  Security Password <span style={{ color: 'var(--gov-red)' }}>*</span>
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter account password"
+                    required
+                    style={{ paddingLeft: '2.25rem' }}
+                  />
+                  <Lock size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
+                </div>
               </div>
+
               <div className="form-group">
-                <label className="form-label">Role</label>
+                <label className="form-label">Designated Official Role</label>
                 <select value={role} onChange={e => setRole(e.target.value)}>
-                  <option value="inspector">Inspector</option>
-                  <option value="admin">Administrator</option>
+                  <option value="inspector">Legal Metrology Field Inspector</option>
+                  <option value="admin">Central / State Directorate Administrator</option>
                 </select>
               </div>
-              <button type="submit" className="btn btn-primary btn-block btn-lg" disabled={loading} style={{ marginTop: '0.5rem' }}>
-                {loading ? 'Signing in...' : 'Sign In'}
+
+              <button
+                type="submit"
+                className="btn btn-primary btn-lg"
+                disabled={loading}
+                style={{ width: '100%', marginTop: '0.5rem' }}
+              >
+                {loading ? 'Authenticating with Secure Server...' : <><LogIn size={17} /> Secure Officer Sign In</>}
               </button>
             </form>
 
-            <div className="demo-credentials">
-              <h4>Demo Credentials (Prototype)</h4>
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                <button className="btn btn-sm btn-outline" onClick={() => fillDemo('inspector')} type="button">
-                  Fill Inspector
+            {/* Quick-Fill Demonstration Panel for Reviewers */}
+            <div style={{ marginTop: '1.5rem', background: 'var(--surface-body)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius)', padding: '1rem' }}>
+              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gov-navy-800)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <UserCheck size={14} color="var(--gov-saffron)" /> Quick Prototype Credentials
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.65rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  onClick={() => fillDemo('inspector')}
+                >
+                  Fill Field Inspector
                 </button>
-                <button className="btn btn-sm btn-outline" onClick={() => fillDemo('admin')} type="button">
-                  Fill Admin
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  onClick={() => fillDemo('admin')}
+                >
+                  Fill Administrator
                 </button>
               </div>
-              <div style={{ marginTop: '0.5rem' }}>
-                <div><strong>Inspector:</strong> <code>inspector@praman.gov.in</code> / <code>Inspector@123</code></div>
-                <div><strong>Admin:</strong> <code>admin@praman.gov.in</code> / <code>Admin@123</code></div>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.6rem', lineHeight: 1.4 }}>
+                • <strong>Inspector:</strong> <code>inspector@praman.gov.in</code> (Pass: <code>Inspector@123</code>)<br />
+                • <strong>Admin:</strong> <code>admin@praman.gov.in</code> (Pass: <code>Admin@123</code>)
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <footer className="footer">
-        <div>Government of India — Ministry of Consumer Affairs, Food & Public Distribution</div>
-        <div style={{ marginTop: '0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>PRAMAN — SIH 2026 Prototype</div>
+      {/* 4. Official Government Portal Footer */}
+      <footer className="gov-login-footer">
+        <div>
+          <strong>Government of India — Ministry of Consumer Affairs, Food & Public Distribution</strong>
+        </div>
+        <div style={{ marginTop: '3px', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+          PRAMAN: Legal Metrology Packaged Commodities (PC) Rules Enforcement System • Prototype SIH 2026
+        </div>
       </footer>
     </div>
   );

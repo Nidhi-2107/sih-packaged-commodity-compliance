@@ -41,9 +41,12 @@ export default function AdminDashboard() {
 
   return (
     <Layout>
-      <div className="page-header">
-        <h2>Administration Dashboard</h2>
-        <p>Organization-wide compliance overview — {user?.department}</p>
+      <div className="gov-page-header">
+        <div className="gov-page-title-row">
+          <h2>State Enforcement Headquarters — Executive Overview</h2>
+          <span className="gov-badge-gold">Administrative Authority</span>
+        </div>
+        <p>National Compliance Monitoring & Statutory Intelligence • {user?.department || 'Department of Legal Metrology'}</p>
       </div>
 
       {/* KPI Cards */}

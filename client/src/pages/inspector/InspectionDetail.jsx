@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
+import Emblem from '../../components/Emblem';
 import api from '../../api/api';
 import {
   ArrowLeft,
@@ -130,22 +131,32 @@ export default function InspectionDetail() {
     <Layout>
       {/* Official Government of India Header for PDF / Print Output */}
       <div className="print-only-header">
-        <h1>GOVERNMENT OF INDIA</h1>
-        <p>MINISTRY OF CONSUMER AFFAIRS, FOOD & PUBLIC DISTRIBUTION • DEPARTMENT OF CONSUMER AFFAIRS</p>
-        <p style={{ fontWeight: 700, marginTop: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+          <Emblem size={56} color="#0c2340" />
+        </div>
+        <h1 style={{ margin: '4px 0', fontSize: '16pt', letterSpacing: '1px' }}>भारत सरकार | GOVERNMENT OF INDIA</h1>
+        <p style={{ margin: '2px 0', fontSize: '10pt', fontWeight: 700, color: '#333' }}>
+          MINISTRY OF CONSUMER AFFAIRS, FOOD & PUBLIC DISTRIBUTION • DEPARTMENT OF LEGAL METROLOGY
+        </p>
+        <p style={{ fontWeight: 800, marginTop: '6px', fontSize: '11pt', textDecoration: 'underline' }}>
           LEGAL METROLOGY (PACKAGED COMMODITIES) RULES, 2011 — STATUTORY COMPLIANCE INSPECTION REPORT
         </p>
-        <p>Inspection No: {insp.inspection_number} | Date: {insp.inspection_date || insp.created_at} | Officer: {insp.inspector_name} ({insp.employee_id})</p>
+        <p style={{ fontSize: '9pt', color: '#555', marginTop: '4px' }}>
+          Case File: <strong>{insp.inspection_number}</strong> | Date: <strong>{insp.inspection_date || insp.created_at}</strong> | Inspecting Officer: <strong>{insp.inspector_name} ({insp.employee_id})</strong>
+        </p>
       </div>
 
-      <div className="page-header">
-        <Link to={insp.inspector_id ? '/inspections' : '/admin/inspections'} style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.5rem' }}>
-          <ArrowLeft size={16} /> Back to Inspections
+      <div className="gov-page-header">
+        <Link to={insp.inspector_id ? '/inspections' : '/admin/inspections'} style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.65rem', color: 'var(--gov-navy-600)', fontWeight: 600 }}>
+          <ArrowLeft size={16} /> Back to Statutory Register
         </Link>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <h2>Inspection {insp.inspection_number}</h2>
-            <p>Conducted on {insp.inspection_date} by {insp.inspector_name} ({insp.employee_id})</p>
+            <div className="gov-page-title-row">
+              <h2>Case File: {insp.inspection_number}</h2>
+              <span className="gov-badge-gold">Official Metrology Record</span>
+            </div>
+            <p>Conducted on {insp.inspection_date} by {insp.inspector_name} ({insp.employee_id}) • State Enforcement Division</p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <button

@@ -36,9 +36,12 @@ export default function InspectionHistory() {
 
   return (
     <Layout>
-      <div className="page-header">
-        <h2>My Inspections</h2>
-        <p>View and search your inspection history</p>
+      <div className="gov-page-header">
+        <div className="gov-page-title-row">
+          <h2>Statutory Inspection Register</h2>
+          <span className="gov-badge-gold">Enforcement Records</span>
+        </div>
+        <p>Official repository of field verifications and compliance evaluations under Legal Metrology Act, 2009</p>
       </div>
 
       <div className="filter-bar">

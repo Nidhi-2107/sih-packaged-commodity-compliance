@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Emblem from './Emblem';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -14,7 +15,11 @@ import {
   ScrollText,
   Menu,
   X,
-  Plus
+  Languages,
+  Eye,
+  FileCheck,
+  Building2,
+  Home
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -33,41 +38,52 @@ export default function Layout({ children }) {
     navigate('/login');
   };
 
-  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
+  const isActive = (path) => {
+    if (path === '/dashboard' || path === '/admin') {
+      return location.pathname === path;
+    }
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
 
   const inspectorLinks = [
     {
-      section: 'Main',
+      section: 'Inspection Services',
       links: [
-        { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+        { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard Overview' },
         { to: '/inspection/new', icon: PlusCircle, label: 'New Inspection' },
-        { to: '/inspections', icon: ClipboardList, label: 'Inspection History' },
+        { to: '/inspections', icon: ClipboardList, label: 'Inspection Register' },
+      ]
+    },
+    {
+      section: 'Statutory References',
+      links: [
+        { to: '/admin/rules', icon: BookOpen, label: 'Legal Metrology Rules (2011)' },
       ]
     }
   ];
 
   const adminLinks = [
     {
-      section: 'Overview',
+      section: 'Administration',
       links: [
-        { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+        { to: '/admin', icon: LayoutDashboard, label: 'State Dashboard' },
+        { to: '/admin/analytics', icon: BarChart3, label: 'Compliance Analytics' },
       ]
     },
     {
-      section: 'Monitoring',
+      section: 'Enforcement Monitoring',
       links: [
-        { to: '/admin/inspectors', icon: Users, label: 'Inspector Monitoring' },
         { to: '/admin/inspections', icon: ClipboardList, label: 'All Inspections' },
-        { to: '/admin/violations', icon: AlertTriangle, label: 'Violations' },
-        { to: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
+        { to: '/admin/violations', icon: AlertTriangle, label: 'Reported Violations' },
+        { to: '/admin/inspectors', icon: Users, label: 'Field Inspectors' },
       ]
     },
     {
-      section: 'Management',
+      section: 'Statutory & System Config',
       links: [
-        { to: '/admin/rules', icon: BookOpen, label: 'Compliance Rules' },
+        { to: '/admin/rules', icon: BookOpen, label: 'Legal Metrology Rules' },
         { to: '/admin/users', icon: Users, label: 'User Management' },
-        { to: '/admin/audit-logs', icon: ScrollText, label: 'Audit Log' },
+        { to: '/admin/audit-logs', icon: ScrollText, label: 'Official Audit Trail' },
       ]
     }
   ];
@@ -75,127 +91,194 @@ export default function Layout({ children }) {
   const navSections = isAdmin ? adminLinks : inspectorLinks;
 
   return (
-    <>
-      {/* Official Government Strip */}
-      <div className="gov-bar">
-        <span>Government of India — Ministry of Consumer Affairs, Food & Public Distribution</span>
-        <span className="prototype-badge">Legal Metrology</span>
+    <div className="gov-page-root">
+      {/* 1. Top Indian Government Accessibility & Utility Bar */}
+      <div className="gov-top-utility-bar">
+        <div className="gov-top-utility-left">
+          <strong>भारत सरकार</strong>
+          <span className="separator">|</span>
+          <span className="hide-on-mobile">Government of India</span>
+          <span className="separator hide-on-mobile">•</span>
+          <span className="hide-on-mobile">उपभोक्ता मामले, खाद्य और सार्वजनिक वितरण मंत्रालय</span>
+          <span className="separator hide-on-mobile">|</span>
+          <span className="hide-on-mobile">Ministry of Consumer Affairs</span>
+        </div>
+
+        <div className="gov-top-utility-right">
+          {/* Static Decorative Accessibility Controls */}
+          <span className="gov-util-item hide-on-mobile" title="Screen Reader Access (Standard Gov Utility)">
+            <Eye size={12} />
+            <span>Screen Reader</span>
+          </span>
+
+          <div className="gov-util-font-controls" title="Text Size Adjustment (Static)">
+            <button type="button" className="gov-util-font-btn" aria-label="Decrease text size">A-</button>
+            <button type="button" className="gov-util-font-btn" aria-label="Default text size">A</button>
+            <button type="button" className="gov-util-font-btn" aria-label="Increase text size">A+</button>
+          </div>
+
+          <span className="gov-util-lang-pill" title="Language: English / हिन्दी (Static)">
+            <Languages size={12} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+            हिन्दी / En
+          </span>
+        </div>
       </div>
 
-      {/* Main Header */}
-      <header className="header">
-        <div className="header-brand">
-          <button 
-            type="button" 
-            className="mobile-menu-btn" 
+      {/* 2. Indian National Tricolor Hairline Accent */}
+      <div className="gov-tricolor-accent" />
+
+      {/* 3. Main Government Portal Header */}
+      <header className="gov-main-header">
+        <div className="gov-header-brand-group">
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            className="gov-hamburger-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
+            aria-label="Toggle Navigation Drawer"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <Shield size={28} className="brand-logo" />
-          <div>
-            <h1>PRAMAN</h1>
-            <span className="subtitle">AI-Assisted Packaged Commodity Compliance & Inspection System</span>
+
+          {/* State Emblem of India */}
+          <div className="gov-emblem-badge">
+            <Emblem size={48} color="#ffffff" />
+          </div>
+
+          <div className="gov-brand-divider" />
+
+          {/* Title & Department Hierarchy */}
+          <div className="gov-brand-details">
+            <div className="gov-brand-title-row">
+              <span className="gov-brand-title">PRAMAN</span>
+              <span className="gov-brand-hindi">प्रमाण</span>
+              <span className="gov-brand-tag">PORTAL</span>
+            </div>
+            <div className="gov-brand-subtitle">
+              AI-Assisted Packaged Commodity Compliance & Inspection System
+            </div>
+            <div className="gov-brand-dept">
+              Legal Metrology Division • Department of Consumer Affairs
+            </div>
           </div>
         </div>
 
-        <div className="header-right">
-          <div className="header-user">
-            <div>
-              <div style={{ fontWeight: 600, fontSize: '0.82rem' }}>{user?.name}</div>
-              <div style={{ fontSize: '0.68rem', opacity: 0.8 }}>
-                {user?.employee_id || (isAdmin ? 'Central Admin' : 'Field Inspector')} • {user?.district || 'HQ'}
+        {/* Right: Officer Profile Capsule & Logout */}
+        <div className="gov-header-user-section">
+          <div className="gov-officer-capsule">
+            <div className="gov-officer-avatar">
+              {user?.name?.charAt(0) || 'O'}
+            </div>
+            <div className="gov-officer-info">
+              <div className="gov-officer-name">{user?.name}</div>
+              <div className="gov-officer-meta">
+                <span className="gov-officer-badge">
+                  {isAdmin ? 'CENTRAL ADMIN' : 'INSPECTOR'}
+                </span>
+                <span>{user?.employee_id || 'OFFICER'}</span>
+                <span>• {user?.district || 'HQ'}</span>
               </div>
             </div>
-            <div className="user-avatar">{user?.name?.charAt(0) || 'U'}</div>
           </div>
-          <button 
-            className="btn btn-sm logout-btn" 
-            onClick={handleLogout} 
-            style={{ background: 'rgba(255,255,255,0.18)', color: 'white', minHeight: '38px', padding: '0.4rem 0.8rem' }}
+
+          <button
+            type="button"
+            className="gov-logout-btn"
+            onClick={handleLogout}
+            title="Sign Out from PRAMAN Portal"
           >
-            <LogOut size={15} /> <span className="hide-on-mobile">Logout</span>
+            <LogOut size={15} />
+            <span className="hide-on-mobile">Sign Out</span>
           </button>
         </div>
       </header>
 
-      {/* Main Body Layout */}
-      <div className="layout">
+      {/* 4. Main App Layout (Sidebar + Viewport) */}
+      <div className="gov-app-layout">
         {/* Mobile Backdrop */}
         {mobileMenuOpen && (
-          <div 
-            className="sidebar-backdrop" 
-            onClick={() => setMobileMenuOpen(false)} 
+          <div
+            className="sidebar-backdrop"
+            onClick={() => setMobileMenuOpen(false)}
           />
         )}
 
-        {/* Sidebar Navigation */}
-        <nav className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-          <div className="mobile-sidebar-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Shield size={22} color="var(--navy)" />
-              <strong style={{ fontSize: '1rem', color: 'var(--navy)' }}>PRAMAN Menu</strong>
-            </div>
-            <button 
-              type="button" 
-              className="btn btn-sm" 
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ background: 'none', color: 'var(--gray-700)', padding: '0.25rem' }}
-            >
-              <X size={20} />
-            </button>
+        {/* Institutional Sidebar */}
+        <aside className={`gov-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <div className="gov-sidebar-inner">
+            {navSections.map(sec => (
+              <div key={sec.section}>
+                <div className="gov-nav-section-title">{sec.section}</div>
+                {sec.links.map(link => {
+                  const active = isActive(link.to);
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      className={`gov-nav-item ${active ? 'active' : ''}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Icon size={17} />
+                      <span>{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </div>
 
-          {navSections.map(sec => (
-            <div className="sidebar-section" key={sec.section}>
-              <div className="sidebar-section-title">{sec.section}</div>
-              {sec.links.map(link => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`sidebar-link ${isActive(link.to) ? 'active' : ''}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <link.icon size={18} />
-                  {link.label}
-                </Link>
-              ))}
+          {/* Legal Metrology Statutory Watermark */}
+          <div className="gov-sidebar-footer">
+            <strong>Legal Metrology Act, 2009</strong>
+            <span>Packaged Commodities Rules, 2011</span>
+            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '4px' }}>
+              Ministry of Consumer Affairs • Govt. of India
             </div>
-          ))}
-
-          {/* Quick Info Box in Sidebar */}
-          <div style={{ marginTop: 'auto', padding: '1rem', background: 'var(--gray-50)', borderRadius: 'var(--border-radius)', fontSize: '0.75rem', border: '1px solid var(--gray-200)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '0.25rem' }}>Legal Metrology Act, 2009</div>
-            <div style={{ color: 'var(--text-secondary)' }}>Packaged Commodities Rules, 2011 — Official Enforcement Portal</div>
           </div>
-        </nav>
+        </aside>
 
-        {/* Page Content */}
-        <main className="main-content">
+        {/* Main Content Viewport */}
+        <main className="gov-main-viewport">
           {children}
         </main>
       </div>
 
-      {/* Mobile Floating Bottom Bar for Field Inspectors */}
-      {!isAdmin && (
-        <div className="mobile-bottom-nav">
-          <Link to="/dashboard" className={`mobile-nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
-            <LayoutDashboard size={20} />
-            <span>Home</span>
+      {/* 5. Mobile Bottom Touch Action Bar for Field Officers */}
+      <nav className="gov-mobile-bottom-bar" aria-label="Mobile Navigation">
+        <Link
+          to={isAdmin ? '/admin' : '/dashboard'}
+          className={`gov-mobile-nav-link ${isActive(isAdmin ? '/admin' : '/dashboard') ? 'active' : ''}`}
+        >
+          <LayoutDashboard size={18} />
+          <span>Dashboard</span>
+        </Link>
+        {!isAdmin && (
+          <Link
+            to="/inspection/new"
+            className={`gov-mobile-nav-link ${isActive('/inspection/new') ? 'active' : ''}`}
+          >
+            <PlusCircle size={18} />
+            <span>New Case</span>
           </Link>
-          <Link to="/inspection/new" className={`mobile-nav-item new-btn ${isActive('/inspection/new') ? 'active' : ''}`}>
-            <div className="new-btn-circle">
-              <Plus size={22} />
-            </div>
-            <span>Inspect</span>
-          </Link>
-          <Link to="/inspections" className={`mobile-nav-item ${isActive('/inspections') ? 'active' : ''}`}>
-            <ClipboardList size={20} />
-            <span>History</span>
-          </Link>
-        </div>
-      )}
-    </>
+        )}
+        <Link
+          to={isAdmin ? '/admin/inspections' : '/inspections'}
+          className={`gov-mobile-nav-link ${isActive(isAdmin ? '/admin/inspections' : '/inspections') ? 'active' : ''}`}
+        >
+          <ClipboardList size={18} />
+          <span>Register</span>
+        </Link>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="gov-mobile-nav-link"
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <LogOut size={18} />
+          <span>Exit</span>
+        </button>
+      </nav>
+    </div>
   );
 }

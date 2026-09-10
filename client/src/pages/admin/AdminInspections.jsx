@@ -25,9 +25,12 @@ export default function AdminInspections() {
 
   return (
     <Layout>
-      <div className="page-header">
-        <h2>All Inspections</h2>
-        <p>View inspections from all inspectors across the organization</p>
+      <div className="gov-page-header">
+        <div className="gov-page-title-row">
+          <h2>Central Statutory Inspection Register</h2>
+          <span className="gov-badge-gold">All Jurisdictions</span>
+        </div>
+        <p>Comprehensive register of packaged commodity inspections across all field circles and districts</p>
       </div>
 
       <div className="filter-bar">
