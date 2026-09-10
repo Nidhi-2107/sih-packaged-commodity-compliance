@@ -14,7 +14,6 @@
     "build": "npm --prefix client run build"
   },
   "dependencies": {
-    "@img/sharp-win32-x64": "^0.35.4",
     "@zxing/library": "^0.23.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^9.1.0",
