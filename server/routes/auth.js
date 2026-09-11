@@ -82,7 +82,7 @@ router.get('/me', (req, res) => {
 });
 
 // POST /api/auth/logout
-router.post('/logout', (req, res) => {
+router.post('/api/auth/logout', (req, res) => {
   try {
     if (req.user) {
       runSql(

@@ -284,46 +284,46 @@ export default function NewInspection() {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Inspection Date *</label>
-                <input type="date" value={form.inspection_date} onChange={e => setForm({...form, inspection_date: e.target.value})} required />
+                <input type="date" value={form.inspection_date} onChange={e => setForm({ ...form, inspection_date: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label className="form-label">Inspection Type</label>
-                <select value={form.inspection_type} onChange={e => setForm({...form, inspection_type: e.target.value})}>
+                <select value={form.inspection_type} onChange={e => setForm({ ...form, inspection_type: e.target.value })}>
                   {INSPECTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
             </div>
             <div className="form-group">
               <label className="form-label">Business Name *</label>
-              <input value={form.business_name} onChange={e => setForm({...form, business_name: e.target.value})} placeholder="Enter business name" required />
+              <input value={form.business_name} onChange={e => setForm({ ...form, business_name: e.target.value })} placeholder="Enter business name" required />
             </div>
             <div className="form-group">
               <label className="form-label">Business Address</label>
-              <input value={form.business_address} onChange={e => setForm({...form, business_address: e.target.value})} placeholder="Enter business address" />
+              <input value={form.business_address} onChange={e => setForm({ ...form, business_address: e.target.value })} placeholder="Enter business address" />
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">District</label>
-                <input value={form.district} onChange={e => setForm({...form, district: e.target.value})} placeholder="e.g. Indore" />
+                <input value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} placeholder="e.g. Indore" />
               </div>
               <div className="form-group">
                 <label className="form-label">State</label>
-                <input value={form.state} onChange={e => setForm({...form, state: e.target.value})} />
+                <input value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Latitude (optional)</label>
-                <input type="number" step="any" value={form.latitude} onChange={e => setForm({...form, latitude: e.target.value})} placeholder="e.g. 22.7196" />
+                <input type="number" step="any" value={form.latitude} onChange={e => setForm({ ...form, latitude: e.target.value })} placeholder="e.g. 22.7196" />
               </div>
               <div className="form-group">
                 <label className="form-label">Longitude (optional)</label>
-                <input type="number" step="any" value={form.longitude} onChange={e => setForm({...form, longitude: e.target.value})} placeholder="e.g. 75.8577" />
+                <input type="number" step="any" value={form.longitude} onChange={e => setForm({ ...form, longitude: e.target.value })} placeholder="e.g. 75.8577" />
               </div>
             </div>
             <div className="form-group">
               <label className="form-label">Inspection Remarks (optional)</label>
-              <textarea rows={2} value={form.remarks} onChange={e => setForm({...form, remarks: e.target.value})} placeholder="Additional notes" />
+              <textarea rows={2} value={form.remarks} onChange={e => setForm({ ...form, remarks: e.target.value })} placeholder="Additional notes" />
             </div>
             <div className="form-group" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               <strong>Inspector:</strong> {user?.name} ({user?.employee_id})
@@ -342,32 +342,32 @@ export default function NewInspection() {
           <div className="card-body">
             <div className="form-group">
               <label className="form-label">Product Name *</label>
-              <input value={product.product_name} onChange={e => setProduct({...product, product_name: e.target.value})} placeholder="e.g. Sample Premium Rice" required />
+              <input value={product.product_name} onChange={e => setProduct({ ...product, product_name: e.target.value })} placeholder="e.g. Sample Premium Rice" required />
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Brand</label>
-                <input value={product.brand} onChange={e => setProduct({...product, brand: e.target.value})} placeholder="e.g. ABC Premium" />
+                <input value={product.brand} onChange={e => setProduct({ ...product, brand: e.target.value })} placeholder="e.g. ABC Premium" />
               </div>
               <div className="form-group">
                 <label className="form-label">Category</label>
-                <select value={product.category} onChange={e => setProduct({...product, category: e.target.value})}>
+                <select value={product.category} onChange={e => setProduct({ ...product, category: e.target.value })}>
                   {CATEGORIES.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>)}
                 </select>
               </div>
             </div>
             <div className="form-group">
               <label className="form-label">Manufacturer</label>
-              <input value={product.manufacturer} onChange={e => setProduct({...product, manufacturer: e.target.value})} placeholder="e.g. ABC Foods Pvt Ltd" />
+              <input value={product.manufacturer} onChange={e => setProduct({ ...product, manufacturer: e.target.value })} placeholder="e.g. ABC Foods Pvt Ltd" />
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Batch / Lot Number</label>
-                <input value={product.batch_number} onChange={e => setProduct({...product, batch_number: e.target.value})} placeholder="If visible" />
+                <input value={product.batch_number} onChange={e => setProduct({ ...product, batch_number: e.target.value })} placeholder="If visible" />
               </div>
               <div className="form-group">
                 <label className="form-label">SKU (optional)</label>
-                <input value={product.sku} onChange={e => setProduct({...product, sku: e.target.value})} />
+                <input value={product.sku} onChange={e => setProduct({ ...product, sku: e.target.value })} />
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
@@ -471,7 +471,7 @@ export default function NewInspection() {
           {analysisResult.ocr?.results?.some(r => r.low_confidence) && (
             <div className="disclaimer" style={{ marginBottom: '1rem' }}>
               <AlertTriangle size={16} />
-              <div><strong>Low OCR confidence — manual verification recommended.</strong> The OCR engine had difficulty reading the image. Extracted text may be incomplete or inaccurate.</div>
+              <div><strong>Low text extraction confidence — manual verification recommended.</strong> The OCR engine had difficulty reading the image. Extracted text may be incomplete or inaccurate.</div>
             </div>
           )}
 
@@ -920,7 +920,7 @@ export default function NewInspection() {
                         if (inspectionId) {
                           try {
                             await api.post(`/inspections/reports/${inspectionId}`);
-                          } catch(e) {}
+                          } catch (e) { }
                         }
                         window.print();
                       }}

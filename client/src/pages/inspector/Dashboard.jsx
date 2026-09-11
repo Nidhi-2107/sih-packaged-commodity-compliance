@@ -33,7 +33,7 @@ export default function InspectorDashboard() {
       const res = await api.get('/inspections?limit=10');
       const all = res.data.inspections || [];
       setInspections(all);
-      
+
       // Load all for stats
       const allRes = await api.get('/inspections?limit=500');
       const allInsp = allRes.data.inspections || [];
@@ -222,7 +222,7 @@ export default function InspectorDashboard() {
       <div className="disclaimer" style={{ marginTop: '1.5rem' }}>
         <AlertTriangle size={18} color="var(--gov-saffron)" style={{ flexShrink: 0, marginTop: 1 }} />
         <div>
-          <strong>Legal Metrology Statutory Directive:</strong> All automated OCR findings and computer-vision declaration extractions are indicative aids. Inspection officers must visually verify physical packages before initiating legal proceedings or issuing notices under Section 39 of the Legal Metrology Act, 2009.
+          <strong>Legal Metrology Statutory Directive:</strong> All automated AI Vision findings and computer-vision declaration extractions are indicative aids. Inspection officers must visually verify physical packages before initiating legal proceedings or issuing notices under Section 39 of the Legal Metrology Act, 2009.
         </div>
       </div>
     </Layout>
